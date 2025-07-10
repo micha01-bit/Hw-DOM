@@ -132,6 +132,6 @@ body {
     cursor: pointer;
   }
 
-  .add-form-button:hover {
+.add-form-button:hover {
     opacity: 0.9;
   }
