@@ -1,111 +1,127 @@
  <!DOCTYPE html>
 <html>
-  <head>
-    <title>Проект "Комменты"</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+<head>
+  <title>Проект "Комменты"</title>
+  <meta charset="utf-8" /> 
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="container">
+  <ul class="comments" id="comments"></ul>
 
-  <body>
-    <div class="container">
-      <ul class="comments">
-        <li class="comment">
-          <div class="comment-header">
-            <div>Глеб Фокин</div>
-            <div>12.02.22 12:18</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Это будет первый комментарий на этой странице
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>
-        <li class="comment">
-          <div class="comment-header">
-            <div>Варвара Н.</div>
-            <div>13.02.22 19:22</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Мне нравится как оформлена эта страница! ❤
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">75</span>
-              <button class="like-button -active-like"></button>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
-        <div class="add-form-row">
-          <button class="add-form-button">Написать</button>
-        </div>
-      </div>
+  <div class="add-form">
+    <input
+      type="text"
+      class="add-form-name"
+      placeholder="Введите ваше имя"
+    />
+    <textarea
+      type="textarea"
+      class="add-form-text"
+      placeholder="Введите ваш коментарий"
+      rows="4"
+    ></textarea>
+    <div class="add-form-row">
+      <button class="add-form-button">Написать</button>
     </div>
-  </body>
+  </div>
+</div>
 
-  <script>
-  "use strict";
+<script>
+"use strict";
 
-// Получаем ссылки на элементы формы и список комментариев
+// Исходный массив комментариев с добавленными свойствами
+const commentsData = [
+  {
+    name: "Глеб Фокин",
+    date: "12.02.22 12:18",
+    text: "Это будет первый комментарий на этой странице",
+    likesCount: 3,
+    liked: false
+  },
+  {
+    name: "Варвара Н.",
+    date: "13.02.22 19:22",
+    text: "Мне нравится как оформлена эта страница! ❤",
+    likesCount: 75,
+    liked: true
+  }
+];
+
+// Получаем элементы формы
 const nameInput = document.querySelector('.add-form-name');
 const textInput = document.querySelector('.add-form-text');
 const addButton = document.querySelector('.add-form-button');
-const commentsList = document.querySelector('.comments');
+const commentsContainer = document.getElementById('comments');
 
-// Объявляем переменные для хранения валидности полей
+// Валидация
 let isNameValid = false;
 let isTextValid = false;
 
-// Функция для проверки валидности имени
 function validateName() {
-  if (nameInput.value.trim() !== "") {
-    isNameValid = true;
-  } else {
-    isNameValid = false;
-  }
+  isNameValid = nameInput.value.trim() !== "";
 }
-
-// Функция для проверки валидности комментария
 function validateText() {
-  if (textInput.value.trim() !== "") {
-    isTextValid = true;
-  } else {
-    isTextValid = false;
-  }
+  isTextValid = textInput.value.trim() !== "";
 }
 
-// Обработчики для валидации при вводе
-nameInput.addEventListener('input', () => {
-  validateName();
+nameInput.addEventListener('input', validateName);
+textInput.addEventListener('input', validateText);
+
+// Функция рендера комментариев
+function renderComments() {
+  // Очищаем контейнер
+  commentsContainer.innerHTML = '';
+
+  // Проходим по массиву и создаем разметку для каждого комментария
+  commentsData.forEach((comment, index) => {
+    const li = document.createElement('li');
+    li.className = 'comment';
+
+    li.innerHTML = `
+      <div class="comment-header">
+        <div>${comment.name}</div>
+        <div>${comment.date}</div>
+      </div>
+      <div class="comment-body">
+        <div class="comment-text">${comment.text}</div>
+      </div>
+      <div class="comment-footer">
+        <div class="likes">
+          <span class="likes-counter">${comment.likesCount}</span>
+          <button class="like-button ${comment.liked ? '-active-like' : ''}" data-index="${index}"></button>
+        </div>
+      </div>`;
+    
+    // Можно добавить обработчик клика на кнопку лайка внутри этого элемента
+    // Но лучше сделать делегирование один раз после рендера
+
+    commentsContainer.appendChild(li);
+  });
+}
+
+// Обработчик делегирования для лайков
+commentsContainer.addEventListener('click', (event) => {
+  if (event.target.classList.contains('like-button')) {
+    const index = parseInt(event.target.getAttribute('data-index'));
+    
+    // Меняем состояние в массиве
+    commentsData[index].liked = !commentsData[index].liked;
+    
+    // Обновляем количество лайков (можно оставить без изменения или менять по желанию)
+    if (commentsData[index].liked) {
+      commentsData[index].likesCount +=1;
+    } else {
+      commentsData[index].likesCount -=1;
+    }
+    
+    // Перерисовываем все комментарии
+    renderComments();
+  }
 });
 
-textInput.addEventListener('input', () => {
-  validateText();
-});
-
-// Обработчик клика по кнопке "Написать"
+// Обработчик добавления нового комментария
 addButton.addEventListener('click', () => {
-  // Проверяем валидность полей
   validateName();
   validateText();
 
@@ -117,10 +133,8 @@ addButton.addEventListener('click', () => {
   const name = nameInput.value.trim();
   const commentText = textInput.value.trim();
 
-  // Получаем текущие дату и время в нужном формате
   const now = new Date();
   
-  // Форматируем дату и время: дд.мм.гг чч:мм
   const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() +1).padStart(2, '0');
   const year = String(now.getFullYear()).slice(-2);
@@ -130,56 +144,28 @@ addButton.addEventListener('click', () => {
 
   const dateStr = `${day}.${month}.${year} ${hours}:${minutes}`;
 
-  // Создаем шаблонную строку нового комментария с кнопкой лайка
-  const newCommentHTML = `
-        <li class="comment">
-          <div class="comment-header">
-            <div>${name}</div>
-            <div>${dateStr}</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              ${commentText}
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">0</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>`;
+  // Добавляем новый комментарий в массив с начальными значениями лайков и liked=false
+  commentsData.push({
+    name,
+    date: dateStr,
+    text: commentText,
+    likesCount:0,
+    liked:false
+  });
 
-  // Добавляем новый комментарий в список
-  commentsList.innerHTML += newCommentHTML;
+  // Очищаем поля формы
+  nameInput.value='';
+  textInput.value='';
 
-  // Очищаем поля формы после добавления
-  nameInput.value = "";
-  textInput.value = "";
+  // Перерисовываем список комментариев
+  renderComments();
 });
 
-// Обработчик делегирования для лайков
-commentsList.addEventListener('click', (event) => {
-  if (event.target.classList.contains('like-button')) {
-    const likeButton = event.target;
-    const commentItem = likeButton.closest('.comment');
-    const likesCounterSpan = commentItem.querySelector('.likes-counter');
+// Изначальный рендер при загрузке страницы
+renderComments();
 
-    let likesCount = parseInt(likesCounterSpan.textContent);
+console.log("It works!");
+</script>
 
-    if (likeButton.classList.contains('-active-like')) {
-      // Убираем лайк
-      likeButton.classList.remove('-active-like');
-      likesCount -=1;
-    } else {
-      // ставим лайк
-      likeButton.classList.add('-active-like');
-      likesCount +=1;
-    }
-
-    likesCounterSpan.textContent= likesCount;
-  }
-});
-    console.log("It works!");
-  </script>
+</body>
 </html>
