@@ -1,4 +1,4 @@
-import { comments } from './comments.js'
+import { comments } from './Comments.js'
 import { sanitizeHtml } from './sanitizeHtml.js'
 
 export const initLikeListeners = (renderComments) => {

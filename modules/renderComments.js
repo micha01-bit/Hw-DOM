@@ -1,4 +1,4 @@
-import { comments } from './comments.js'
+import { comments } from './Comments.js'
 import { initLikeListeners, initReplyListeners } from './initListeners.js'
 
 export const renderComments = () => {
