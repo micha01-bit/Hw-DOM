@@ -1,17 +1,16 @@
-// Исходный массив комментариев
-export let commentsData = [
+export let comments = [
     {
         name: 'Глеб Фокин',
-        date: '12.02.22 12:18',
+        date: new Date(),
         text: 'Это будет первый комментарий на этой странице',
-        likesCount: 3,
-        liked: false,
+        likes: 3,
+        isLiked: false,
     },
     {
         name: 'Варвара Н.',
-        date: '13.02.22 19:22',
+        date: new Date(),
         text: 'Мне нравится как оформлена эта страница! ❤',
-        likesCount: 75,
-        liked: true,
+        likes: 75,
+        isLiked: true,
     },
 ]
