@@ -1,50 +1,33 @@
-// render.js
-import { escapeHtml } from './utils.js'
+import { comments } from './comments.js'
+import { initLikeListeners, initReplyListeners } from './initListeners.js'
 
-export function renderComments(comments, container) {
-    container.innerHTML = ''
+export const renderComments = () => {
+    const list = document.querySelector('.comments')
 
-    comments.forEach((comment, index) => {
-        const li = document.createElement('li')
-        li.className = 'comment'
-
-        li.innerHTML = `
-      <div class="comment-header">
-        <div>${escapeHtml(comment.name)}</div>
-        <div>${comment.date}</div>
-      </div>
-      <div class="comment-body">
-        <div class="comment-text">${escapeHtml(comment.text)}</div>
-      </div>
-      <div class="comment-footer">
+    list.innerHTML = comments
+        .map((comment, index) => {
+            return `
+    <li class="comment" data-index="${index}"> 
+    <div class="comment-header"> 
+    <div>${comment.name}</div> 
+    <div>${comment.date.toLocaleDateString()}</div> 
+    </div> 
+    <div class="comment-body"> 
+    <div class="comment-text"> 
+    ${comment.text} 
+    </div> 
+    </div> 
+     <div class="comment-footer">
         <div class="likes">
-          <span class="likes-counter">${comment.likesCount}</span>
-          <button class="like-button ${comment.liked ? '-active-like' : ''}" data-index="${index}"></button>
+          <span class="likes-counter">${comment.likes}</span>
+          <button data-index="${index}" class="like-button ${comment.isliked ? '-active-like' : ''}"></button>
         </div>
-      </div>`
-
-        // Добавляем обработчик клика для цитирования
-        li.addEventListener('click', (event) => {
-            // Если клик по кнопке лайка — ничего не делаем
-            if (event.target.classList.contains('like-button')) {
-                return
-            }
-
-            // Иначе вставляем цитату
-            const commentTextDiv = li.querySelector('.comment-text')
-
-            // Вставляем цитату в поле
-            const textInput = document.querySelector('.add-form-text')
-
-            // Добавляем цитату с ">" в начало строки
-            textInput.value += `> ${commentTextDiv.textContent}\n\n`
-
-            // Валидируем текст (если есть функция)
-            if (typeof validateText === 'function') {
-                validateText()
-            }
+      </div> 
+      </li> 
+      `
         })
+        .join('')
 
-        container.appendChild(li)
-    })
+    initLikeListeners(renderComments)
+    initReplyListeners()
 }
