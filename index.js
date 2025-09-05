@@ -1,5 +1,12 @@
+// main.js
+import { commentsData } from './modules/commentsData.js'
 import { renderComments } from './modules/renderComments.js'
-import { initAddCommentListener } from './modules/initListeners.js'
+import { setupHandlers } from './modules/handlers.js'
 
-renderComments()
-initAddCommentListener(renderComments)
+const commentsContainer = document.getElementById('comments')
+
+// Изначальный рендер при загрузке страницы
+renderComments(commentsData, commentsContainer)
+
+// Установка обработчиков и логики взаимодействия
+setupHandlers()
