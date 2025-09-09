@@ -28,6 +28,6 @@ export const renderComments = () => {
         })
         .join('')
 
-    initLikeListeners(renderComments)
+    initLikeListeners()
     initReplyListeners()
 }

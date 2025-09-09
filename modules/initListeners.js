@@ -1,7 +1,8 @@
 import { comments } from './Comments.js'
 import { sanitizeHtml } from './sanitizeHtml.js'
+import { renderComments } from './renderComments.js'
 
-export const initLikeListeners = (renderComments) => {
+export const initLikeListeners = () => {
     const likeButtons = document.querySelectorAll('.like-button')
 
     for (const likeButton of likeButtons) {
@@ -34,7 +35,7 @@ export const initReplyListeners = () => {
     }
 }
 
-export const initAddCommentListener = (renderComments) => {
+export const initAddCommentListener = () => {
     const name = document.getElementById('name-input')
     const text = document.getElementById('text-input')
 
